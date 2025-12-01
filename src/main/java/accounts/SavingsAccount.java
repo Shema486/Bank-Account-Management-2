@@ -3,6 +3,8 @@ package accounts;
 
 import customers.Customer;
 import customers.PremiumCustomer;
+import exceptions.InsufficientFundException;
+
 // US-1: SavingsAccount
 public class SavingsAccount extends Account{
 
@@ -27,7 +29,7 @@ public class SavingsAccount extends Account{
     public String getAccountType() {
         return "Saving";}
     @Override
-    public boolean withdraw(double amount) {
+    public boolean withdraw(double amount)throws InsufficientFundException {
         // Check if withdrawal stays above minimum balance
         if (balance - amount >= minimumBalance) {
             balance -= amount;
@@ -35,9 +37,9 @@ public class SavingsAccount extends Account{
                     ". New balance: $" + balance);
             return true;
         } else {
-            System.out.println("Withdrawal denied! Minimum balance of $" +
+            throw new InsufficientFundException("Withdrawal denied! Minimum balance of $" +
                     minimumBalance + " must be maintained.");
-            return false;
+
         }
     }
     public double calculateInterestEarned(){
