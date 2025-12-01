@@ -17,7 +17,7 @@ public class TransactionManagerTest {
     void setUp() {
         manager = new TransactionManager();
 
-        // 1. Initial Deposit
+        // 1. Initial Deposit/
         manager.addTransaction(new Transaction(ACC_ID, "DEPOSIT", 1000.00, 1000.00));
         // 2. Withdrawal
         manager.addTransaction(new Transaction(ACC_ID, "WITHDRAW", 200.00, 800.00));

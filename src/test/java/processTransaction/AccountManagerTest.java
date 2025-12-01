@@ -21,9 +21,9 @@ public class AccountManagerTest {
         manager = new AccountManager();
         testCustomer = new RegularCustomer("Test Customer", 30, "555-0000", "Address");
 
-        // The manager uses a static counter for account IDs.
+        // The manager uses a static counter for account IDs./
         // We'll rely on the actual IDs being created sequentially (e.g., ACC001, ACC002)
-        // Note: For deterministic testing, you might reset static counters,
+        // Note: For deterministic testing, you might reset static counters,/
         // but for integration testing, we use the actual objects.
         acc1 = new SavingsAccount(testCustomer, 5000.00);
         acc2 = new CheckingAccount(testCustomer, 100.00);
