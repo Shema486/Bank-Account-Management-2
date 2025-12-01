@@ -1,3 +1,4 @@
+import utils.ValidationUtils;
 import accounts.Account;
 import accounts.CheckingAccount;
 import accounts.SavingsAccount;
@@ -9,14 +10,15 @@ import processTransaction.Transaction;
 import transactionHistory.TransactionManager;
 
 
-import java.sql.SQLOutput;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+
 
 public class Main {
     static Scanner scanner = new Scanner(System.in);
      static AccountManager accountManager = new AccountManager();
     static TransactionManager transactionManager = new TransactionManager();
+    static ValidationUtils validationUtilts = new ValidationUtils();
 
     public static void main(String[] args) {
         // 1. Initialize data for testing (US-1 and US-4 requirement)
@@ -114,23 +116,23 @@ public class Main {
         System.out.println("CREATE NEW ACCOUNT");
         System.out.println("‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗\n");
 //        System.out.print("ENTER CUSTOMER NAME: ");
-        String name = getStringInput("ENTER CUSTOMER NAME: ");
+        String name = validationUtilts.getStringInput("ENTER CUSTOMER NAME: ");
 
 //        System.out.print("ENTER AGE: ");
-        int age = getIntInput("Enter Customer Age: ",18,70);
+        int age = validationUtilts.getIntInput("Enter Customer Age: ",18,70);
         if (age == -1) return;
 
 //        System.out.print("ENTER CONTACT: ");
-        String contact = getStringInput("ENTER CONTACT: ");
+        String contact = validationUtilts.getStringInput("ENTER CONTACT: ");
 
 //        System.out.print("ENTER ADDRESS: ");
-        String address = getStringInput("ENTER ADDRESS: ");
+        String address = validationUtilts.getStringInput("ENTER ADDRESS: ");
 
         System.out.println("\n-------CUSTOMER TYPE:-----");
         System.out.println("1.Regular Customer (Standard banking service) ");
         System.out.println("2.Premium Customer (Enhanced benefits, min balance) ");
 //        System.out.print("select type (1-2): ");
-        int customerType = getIntInput(" select type (1-2): ",1,2);
+        int customerType = validationUtilts.getIntInput(" select type (1-2): ",1,2);
         scanner.nextLine();
 
         Customer customer;
@@ -143,10 +145,10 @@ public class Main {
         System.out.println("1. Saving Account (Interest:3.5%, Min Balance: $500)");
         System.out.println("2. Checking Account (Overdraft: $1000, Monthly fee: $10)");
 //        System.out.print("\select type (1-2): ");
-        int accountType = getIntInput("select type (1-2): ",1,2);
+        int accountType = validationUtilts.getIntInput("select type (1-2): ",1,2);
 
 //        System.out.print("Enter initial deposit amount: $");
-        double amountDeposited = getDoubleInput("Enter initial deposit amount: $",500);
+        double amountDeposited = validationUtilts.getDoubleInput("Enter initial deposit amount: $",500);
 
         Account account;
         if (accountType == 1){
@@ -158,7 +160,7 @@ public class Main {
         accountManager.addAccount(account);
         account.displayAccountDetails();
         System.out.println("\n ✅ CREATION OF YOUR ACCOUNT IS SUCCESSFULLY COMPLETE");
-        enterToContinue();
+        validationUtilts.enterToContinue();
     }
 
     // Logic for Menu Option 3 (US-3)
@@ -168,13 +170,13 @@ public class Main {
         System.out.println("‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗\n");
 
 //        System.out.print("Enter Account number (e.g, ACC001)");
-        String accNumber = getStringInput("Enter Account number (e.g, ACC001): ");
+        String accNumber = validationUtilts.getStringInput("Enter Account number (e.g, ACC001): ");
 
         //to get that account from AccountManager (array)
         Account account =accountManager.findAccount(accNumber);
         if (account ==null){
             System.out.println("Account does not exist");
-            enterToContinue();
+            validationUtilts.enterToContinue();
             return;
         }
         System.out.println("Account details......... ");
@@ -186,11 +188,11 @@ public class Main {
         System.out.println("1.Deposit");
         System.out.println("2.withdraw");
 //        System.out.print("select type (1-2): ");
-        int type = getIntInput(" select type (1-2): ",1,2);
+        int type = validationUtilts.getIntInput(" select type (1-2): ",1,2);
         String  transactionType = type==1 ? "DEPOSIT" : "WITHDRAW";
 
 //        System.out.print("Enter amount for transaction:" );
-        double amountForTransaction = getDoubleInput("Enter amount for transaction: $",500);
+        double amountForTransaction = validationUtilts.getDoubleInput("Enter amount for transaction: $",500);
         double initialBalance = account.getBalance();
         double balanceAfter = type ==1 ? initialBalance+amountForTransaction : initialBalance-amountForTransaction;
 
@@ -207,7 +209,7 @@ public class Main {
         System.out.println("Date/time: " + transaction.getTimestamp());
 
 //        System.out.println("\nConfirm transaction? (Y/N): ");
-        String confirm = getStringInput("\nConfirm transaction? (Y/N): ");
+        String confirm = validationUtilts.getStringInput("\nConfirm transaction? (Y/N): ");
 
         if (confirm.equalsIgnoreCase("y")){
             boolean accept = account.processTransaction(amountForTransaction,transactionType);
@@ -221,7 +223,7 @@ public class Main {
         else {
             System.out.println("\nTransaction denied");
         }
-        enterToContinue();
+        validationUtilts.enterToContinue();
     }
 
     // Logic for Menu Option 4 (US-4)
@@ -231,12 +233,12 @@ public class Main {
         System.out.println("‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗\n");
 
 //        System.out.print("Enter Account (e.g,ACC001): ");
-        String accNum = getStringInput("Enter Account (e.g,ACC001): ");
+        String accNum = validationUtilts.getStringInput("Enter Account (e.g,ACC001): ");
 
         Account account = accountManager.findAccount(accNum);
         if(account==null){
             System.out.println("\nAccount not found");
-           enterToContinue();
+           validationUtilts.enterToContinue();
            return;
         }
         System.out.println("\nAccount: "+accNum+"-"+ account.getCustomer().getName());
@@ -248,65 +250,4 @@ public class Main {
         System.out.println("Total Deposit: " + transactionManager.calculateTotalDeposit(accNum));
         System.out.println("Total withdraw: " + transactionManager.calculateTotalWithdraw(accNum));
     }
-
-     //helper line
-    private  static void enterToContinue(){
-     System.out.println("\npress enter to continue...\n");
-     scanner.nextLine();
-  }
-    // --- Generic Input Validation Helpers ---
-    // SAFE integer input
-    private static int getIntInput(String prompt, int min, int max) {
-        while (true) {
-            try {
-                System.out.print(prompt);
-                int value = scanner.nextInt();
-                scanner.nextLine();
-
-                if (value < min || value > max) {
-                    System.out.println("Value must be between " + min + " and " + max + ".");
-                } else {
-                    return value;  // valid
-                }
-            } catch (InputMismatchException e) {
-                System.out.println("Invalid input. Enter a whole number.");
-                scanner.nextLine();
-            }
-        }
-    }
-
-    // SAFE double input
-    private static double getDoubleInput(String prompt, double min) {
-        while (true) {
-            try {
-                System.out.print(prompt);
-                double value = scanner.nextDouble();
-                scanner.nextLine();
-
-                if (value < min) {
-                    System.out.println("Value must be at least " + min + ".");
-                } else {
-                    return value; // valid
-                }
-            } catch (InputMismatchException e) {
-                System.out.println("Invalid input. Enter a number.");
-                scanner.nextLine();
-            }
-        }
-    }
-
-    // SAFE text input (not empty)
-    private static String getStringInput(String prompt) {
-        while (true) {
-            System.out.print(prompt);
-            String input = scanner.nextLine().trim();
-
-            if (input.isEmpty()) {
-                System.out.println("This field cannot be empty. Try again.");
-            } else {
-                return input;
-            }
-        }
-    }
-
 }

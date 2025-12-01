@@ -2,6 +2,7 @@ package accounts;
 
 import customers.Customer;
 import customers.PremiumCustomer;
+import exceptions.OverdraftExceededException;
 
 public class CheckingAccount extends Account{
 
@@ -42,11 +43,10 @@ public class CheckingAccount extends Account{
     public String getAccountType() {return "Checking";}
 
     @Override
-    public boolean withdraw(double amount) {
+    public boolean withdraw(double amount)throws OverdraftExceededException {
         // Check if withdrawal stays within overdraft limit
         if (this.balance - amount >= overdraftLimit) {
-            System.out.println("Withdrawal denied! Overdraft limit of $1000 exceeded.");
-            return false;
+            throw new OverdraftExceededException("Withdrawal denied! Overdraft limit of $1000 exceeded.");
         } else {
             this.balance -= amount;
             System.out.println("Withdrawal successful. New balance: $" + this.balance);
