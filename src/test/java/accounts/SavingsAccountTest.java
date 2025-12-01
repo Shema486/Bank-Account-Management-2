@@ -13,7 +13,7 @@ public class SavingsAccountTest {
 
     @BeforeEach
     void setUp() {
-        // Initialize a RegularCustomer and a SavingsAccount before each test
+        // Initialize a RegularCustomer and a SavingsAccount before each test/
         testCustomer = new RegularCustomer("Test User", 30, "123", "Anywhere");
         // Start with a balance of $1000.00
         account = new SavingsAccount(testCustomer, 1000.00);

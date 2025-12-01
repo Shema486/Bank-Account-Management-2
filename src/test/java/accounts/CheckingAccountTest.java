@@ -6,8 +6,8 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+
+
 
 public class CheckingAccountTest {
     private CheckingAccount account;
@@ -45,4 +45,5 @@ public class CheckingAccountTest {
         assertTrue(account.deposit(300.00), "Deposit should succeed.");
         assertEquals(100.00, account.getBalance(),  "Balance should restore to positive value.");
     }
+
 }
