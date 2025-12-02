@@ -18,7 +18,7 @@ public class Main {
     static Scanner scanner = new Scanner(System.in);
      static AccountManager accountManager = new AccountManager();
     static TransactionManager transactionManager = new TransactionManager();
-    static ValidationUtils validationUtilts = new ValidationUtils();
+    static ValidationUtils validationUtils = new ValidationUtils();
 
     public static void main(String[] args) {
         // 1. Initialize data for testing (US-1 and US-4 requirement)
@@ -30,7 +30,7 @@ public class Main {
         do {
             displayMenu();
             try {
-                System.out.print("Enter your choice (1-5): ");
+                System.out.print("Enter your choice (1-6): ");
                 choice = scanner.nextInt();
                 scanner.nextLine(); // Consume newline
 
@@ -53,6 +53,9 @@ public class Main {
                         handleViewHistory();
                         break;
                     case 5:
+                        handleTransfer();
+                        break;
+                    case 6:
                         System.out.println("\nThank you for using the Bank Account Management System. Goodbye!");
                         break;
                     default:
@@ -65,7 +68,7 @@ public class Main {
                 scanner.nextLine(); // Clear the invalid input
                 choice = 0;
             }
-        } while (choice != 5);
+        } while (choice != 6);
 
         scanner.close();
     }
@@ -73,15 +76,17 @@ public class Main {
     // --- Helper Methods ---
 
     private static void displayMenu() {
-        System.out.println("\n================================================");
-        System.out.println("||     BANK ACCOUNT MANAGEMENT SYSTEM MENU    ||");
-        System.out.println("================================================");
-        System.out.println("1. Create New Account (US-2)");
-        System.out.println("2. View All Accounts (US-1)");
-        System.out.println("3. Process Transaction (US-3)");
-        System.out.println("4. View Transaction History (US-4)");
-        System.out.println("5. Exit");
-        System.out.println("=============================================");
+            System.out.println("\n=============================================");
+            System.out.println("      BANK ACCOUNT MANAGEMENT SYSTEM MENU    ");
+            System.out.println("=============================================");
+            System.out.println("1. Create New Account ");
+            System.out.println("2. View All Accounts ");
+            System.out.println("3. Process Transaction (Deposit/Withdraw) ");
+            System.out.println("4. Process Account Transfer");
+            System.out.println("5. View Transaction History ");
+            System.out.println("6. Exit ");
+            System.out.println("=============================================");
+
     }
 
     // Helper to create initial accounts and transactions for testing
@@ -110,29 +115,96 @@ public class Main {
         System.out.println("--- Initial Test Data Loaded Successfully ---");
     }
 
+    // 1. Get Source Account
+    private static void handleTransfer(){
+        System.out.println("\n--- PROCESS ACCOUNT TRANSFER ---");
+        //System.out.println("Enter Source Account (e.g ACC001)");
+        String sourceAccNum = validationUtils.getStringInput("Enter SOURCE Account Number (From): (e.g ACC001)");
+        Account sourceAccount = accountManager.findAccount(sourceAccNum);
+        if (sourceAccount == null){
+            System.out.println("Error: Source Account not found.");
+            return;
+        }
+        // 2. Get Target Account
+       // System.out.print("Enter TARGET Account Number (To): ");
+        String targetAccNum = validationUtils.getStringInput("Enter TARGET Account Number (To):(e.g ACC002) ");
+        Account targetAccount = accountManager.findAccount(targetAccNum);
+
+        if (targetAccount == null) {
+            System.out.println("Error: Target Account not found.");
+            return;
+        }
+
+        if (sourceAccount.getAccountNumber().equalsIgnoreCase(targetAccount.getAccountNumber())) {
+            System.out.println("Error: Cannot transfer funds to the same account.");
+            return;
+        }
+        // 3. Get Amount
+        System.out.print("Enter Transfer Amount: $");
+        double transferAmount = validationUtils.getDoubleInput("Enter Transfer Amount: $",500); // Assumes your helper method for input validation
+
+        if (transferAmount <= 0) {
+            System.out.println("Error: Transfer amount must be positive.");
+            return;
+        }
+        // --- 4. EXECUTION ---
+        // Attempt Withdrawal FIRST (Triggers all validation rules)
+        System.out.println("Attempting withdrawal from source...");
+        if (sourceAccount.withdraw(transferAmount)) {
+            // Withdrawal successful, now process deposit
+            System.out.println("Withdrawal successful. Processing deposit to target...");
+
+            // Deposit will almost always succeed unless amount is negative (already checked)
+            if (targetAccount.deposit(transferAmount)) {
+                // --- 5. RECORD TRANSACTIONS ---
+
+                // Record Withdrawal Transaction
+                Transaction withdrawalTxn = new Transaction(sourceAccNum, "WITHDRAW", transferAmount, sourceAccount.getBalance());
+                transactionManager.addTransaction(withdrawalTxn);
+
+                // Record Deposit Transaction
+                Transaction depositTxn = new Transaction(targetAccNum, "DEPOSIT", transferAmount, targetAccount.getBalance());
+                transactionManager.addTransaction(depositTxn);
+
+                System.out.printf("\nSUCCESS: Transfer of $%,.2f complete.\n", transferAmount);
+                System.out.printf("  Source Balance (%s): %s\n", sourceAccNum, sourceAccount.getBalance());
+                System.out.printf("  Target Balance (%s): %s\n", targetAccNum, targetAccount.getBalance());
+
+            } else {
+                // This should ideally never happen for a positive amount, but handles exceptions
+                System.out.println("Withdrawal succeeded, but deposit failed. Balance restored.");
+                // In a real system, you would Roll back the withdrawal here.
+                // For simplicity, we assume the deposit success.
+                sourceAccount.deposit(transferAmount); // Rollback attempt
+            }
+        } else {
+            // Withdrawal failed due to insufficient funds, minimum balance, or overdraft limit
+            System.out.println("TRANSFER FAILED: Withdrawal from source account was rejected (Check account rules/limits).");
+        }
+    }
     // Logic for Menu Option 1 (US-2)
     private static void handleCreateAccount() {
         System.out.println("‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗");
         System.out.println("CREATE NEW ACCOUNT");
         System.out.println("‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗\n");
 //        System.out.print("ENTER CUSTOMER NAME: ");
-        String name = validationUtilts.getStringInput("ENTER CUSTOMER NAME: ");
+        String name = validationUtils.getStringInput("ENTER CUSTOMER NAME: ");
 
 //        System.out.print("ENTER AGE: ");
-        int age = validationUtilts.getIntInput("Enter Customer Age: ",18,70);
+        int age = validationUtils.getIntInput("Enter Customer Age: ",18,70);
         if (age == -1) return;
 
 //        System.out.print("ENTER CONTACT: ");
-        String contact = validationUtilts.getStringInput("ENTER CONTACT: ");
+        String contact = validationUtils.getStringInput("ENTER CONTACT: ");
 
 //        System.out.print("ENTER ADDRESS: ");
-        String address = validationUtilts.getStringInput("ENTER ADDRESS: ");
+        String address = validationUtils.getStringInput("ENTER ADDRESS: ");
 
         System.out.println("\n-------CUSTOMER TYPE:-----");
         System.out.println("1.Regular Customer (Standard banking service) ");
         System.out.println("2.Premium Customer (Enhanced benefits, min balance) ");
 //        System.out.print("select type (1-2): ");
-        int customerType = validationUtilts.getIntInput(" select type (1-2): ",1,2);
+        int customerType = validationUtils.getIntInput(" select type (1-2): ",1,2);
         scanner.nextLine();
 
         Customer customer;
@@ -145,10 +217,10 @@ public class Main {
         System.out.println("1. Saving Account (Interest:3.5%, Min Balance: $500)");
         System.out.println("2. Checking Account (Overdraft: $1000, Monthly fee: $10)");
 //        System.out.print("\select type (1-2): ");
-        int accountType = validationUtilts.getIntInput("select type (1-2): ",1,2);
+        int accountType = validationUtils.getIntInput("select type (1-2): ",1,2);
 
 //        System.out.print("Enter initial deposit amount: $");
-        double amountDeposited = validationUtilts.getDoubleInput("Enter initial deposit amount: $",500);
+        double amountDeposited = validationUtils.getDoubleInput("Enter initial deposit amount: $",500);
 
         Account account;
         if (accountType == 1){
@@ -160,7 +232,7 @@ public class Main {
         accountManager.addAccount(account);
         account.displayAccountDetails();
         System.out.println("\n ✅ CREATION OF YOUR ACCOUNT IS SUCCESSFULLY COMPLETE");
-        validationUtilts.enterToContinue();
+        validationUtils.enterToContinue();
     }
 
     // Logic for Menu Option 3 (US-3)
@@ -170,13 +242,13 @@ public class Main {
         System.out.println("‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗\n");
 
 //        System.out.print("Enter Account number (e.g, ACC001)");
-        String accNumber = validationUtilts.getStringInput("Enter Account number (e.g, ACC001): ");
+        String accNumber = validationUtils.getStringInput("Enter Account number (e.g, ACC001): ");
 
         //to get that account from AccountManager (array)
         Account account =accountManager.findAccount(accNumber);
         if (account ==null){
             System.out.println("Account does not exist");
-            validationUtilts.enterToContinue();
+            validationUtils.enterToContinue();
             return;
         }
         System.out.println("Account details......... ");
@@ -188,11 +260,11 @@ public class Main {
         System.out.println("1.Deposit");
         System.out.println("2.withdraw");
 //        System.out.print("select type (1-2): ");
-        int type = validationUtilts.getIntInput(" select type (1-2): ",1,2);
+        int type = validationUtils.getIntInput(" select type (1-2): ",1,2);
         String  transactionType = type==1 ? "DEPOSIT" : "WITHDRAW";
 
 //        System.out.print("Enter amount for transaction:" );
-        double amountForTransaction = validationUtilts.getDoubleInput("Enter amount for transaction: $",500);
+        double amountForTransaction = validationUtils.getDoubleInput("Enter amount for transaction: $",500);
         double initialBalance = account.getBalance();
         double balanceAfter = type ==1 ? initialBalance+amountForTransaction : initialBalance-amountForTransaction;
 
@@ -209,7 +281,7 @@ public class Main {
         System.out.println("Date/time: " + transaction.getTimestamp());
 
 //        System.out.println("\nConfirm transaction? (Y/N): ");
-        String confirm = validationUtilts.getStringInput("\nConfirm transaction? (Y/N): ");
+        String confirm = validationUtils.getStringInput("\nConfirm transaction? (Y/N): ");
 
         if (confirm.equalsIgnoreCase("y")){
             boolean accept = account.processTransaction(amountForTransaction,transactionType);
@@ -223,7 +295,7 @@ public class Main {
         else {
             System.out.println("\nTransaction denied");
         }
-        validationUtilts.enterToContinue();
+        validationUtils.enterToContinue();
     }
 
     // Logic for Menu Option 4 (US-4)
@@ -233,12 +305,12 @@ public class Main {
         System.out.println("‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗\n");
 
 //        System.out.print("Enter Account (e.g,ACC001): ");
-        String accNum = validationUtilts.getStringInput("Enter Account (e.g,ACC001): ");
+        String accNum = validationUtils.getStringInput("Enter Account (e.g,ACC001): ");
 
         Account account = accountManager.findAccount(accNum);
         if(account==null){
             System.out.println("\nAccount not found");
-           validationUtilts.enterToContinue();
+           validationUtils.enterToContinue();
            return;
         }
         System.out.println("\nAccount: "+accNum+"-"+ account.getCustomer().getName());

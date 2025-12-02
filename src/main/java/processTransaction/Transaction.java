@@ -1,10 +1,12 @@
 package processTransaction;
 
+
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.text.DecimalFormat;
 
-public class Transaction {
+
+public class Transaction  {
     // Static field for generating unique transaction IDs (e.g., TXN001)
     private static int transactionCounter = 0;
 
@@ -49,4 +51,5 @@ public class Transaction {
     public double getAmount() { return amount; }
     public double getBalanceAfter() { return balanceAfter; }
     public String getTimestamp() { return timestamp; }
+
 }

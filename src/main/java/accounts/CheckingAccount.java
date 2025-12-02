@@ -4,7 +4,6 @@ import customers.Customer;
 import customers.PremiumCustomer;
 import exceptions.OverdraftExceededException;
 
-import static jdk.javadoc.internal.doclets.formats.html.markup.HtmlStyle.exceptions;
 
 public class CheckingAccount extends Account{
 
