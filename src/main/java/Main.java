@@ -205,7 +205,7 @@ public class Main {
         System.out.println("2.Premium Customer (Enhanced benefits, min balance) ");
 //        System.out.print("select type (1-2): ");
         int customerType = validationUtils.getIntInput(" select type (1-2): ",1,2);
-        scanner.nextLine();
+
 
         Customer customer;
         if (customerType ==1){
