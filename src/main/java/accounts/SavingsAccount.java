@@ -29,19 +29,20 @@ public class SavingsAccount extends Account{
     public String getAccountType() {
         return "Saving";}
     @Override
-    public boolean withdraw(double amount)throws InsufficientFundException {
-        // Check if withdrawal stays above minimum balance
+    public boolean withdraw(double amount) {
         if (balance - amount >= minimumBalance) {
             balance -= amount;
             System.out.println("SavingAccount: Withdrew $" + amount +
                     ". New balance: $" + balance);
             return true;
         } else {
-            throw new InsufficientFundException("Withdrawal denied! Minimum balance of $" +
-                    minimumBalance + " must be maintained.");
-
+            throw new InsufficientFundException(
+                    "Withdrawal denied! Minimum balance of $" + minimumBalance + " must be maintained."
+            );
         }
     }
+
+
     public double calculateInterestEarned(){
         return this.balance * interestRate/100;
     }

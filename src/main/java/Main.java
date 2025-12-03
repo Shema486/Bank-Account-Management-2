@@ -82,8 +82,8 @@ public class Main {
             System.out.println("1. Create New Account ");
             System.out.println("2. View All Accounts ");
             System.out.println("3. Process Transaction (Deposit/Withdraw) ");
-            System.out.println("4. Process Account Transfer");
-            System.out.println("5. View Transaction History ");
+            System.out.println("4. View Transaction History ");
+            System.out.println("5. Process Account Transfer");
             System.out.println("6. Exit ");
             System.out.println("=============================================");
 
@@ -237,66 +237,76 @@ public class Main {
 
     // Logic for Menu Option 3 (US-3)
     private static void handleProcessTransaction() {
+
         System.out.println("‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗");
         System.out.println("PROCESS TRANSACTION");
         System.out.println("‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗\n");
 
-//        System.out.print("Enter Account number (e.g, ACC001)");
-        String accNumber = validationUtils.getStringInput("Enter Account number (e.g, ACC001): ");
+        String accNumber = validationUtils.getStringInput("Enter Account number (e.g., ACC001): ");
 
-        //to get that account from AccountManager (array)
-        Account account =accountManager.findAccount(accNumber);
-        if (account ==null){
-            System.out.println("Account does not exist");
+        // Retrieve account
+        Account account = accountManager.findAccount(accNumber);
+        if (account == null) {
+            System.out.println("Account does not exist.");
             validationUtils.enterToContinue();
             return;
         }
-        System.out.println("Account details......... ");
+
+        System.out.println("\nAccount Details:");
         System.out.println("Customer name: " + account.getCustomer().getName());
-        System.out.println("Account type: "+ account.getAccountType());
+        System.out.println("Account type: " + account.getAccountType());
         System.out.println("Current Balance: $" + account.getBalance());
 
+        // Select transaction type
         System.out.println("\nTransaction type:");
-        System.out.println("1.Deposit");
-        System.out.println("2.withdraw");
-//        System.out.print("select type (1-2): ");
-        int type = validationUtils.getIntInput(" select type (1-2): ",1,2);
-        String  transactionType = type==1 ? "DEPOSIT" : "WITHDRAW";
+        System.out.println("1. Deposit");
+        System.out.println("2. Withdraw");
+        int type = validationUtils.getIntInput("Select type (1-2): ", 1, 2);
 
-//        System.out.print("Enter amount for transaction:" );
-        double amountForTransaction = validationUtils.getDoubleInput("Enter amount for transaction: $",500);
+        String transactionType = (type == 1) ? "DEPOSIT" : "WITHDRAW";
+
+        // Enter amount
+        double amount = validationUtils.getDoubleInput("Enter amount for transaction: $", 500);
+
         double initialBalance = account.getBalance();
-        double balanceAfter = type ==1 ? initialBalance+amountForTransaction : initialBalance-amountForTransaction;
 
-        System.out.println("‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗");
-        System.out.println("Transaction conformation");
-        System.out.println("‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗\n");
+        System.out.println("\n‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗");
+        System.out.println("Transaction Confirmation");
+        System.out.println("‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗");
 
-        Transaction transaction = new Transaction(accNumber,transactionType,amountForTransaction,balanceAfter);
-        System.out.println("Transaction ID:" +transaction.getTransactionId());
-        System.out.println("AccountNumber:" + transaction.getAccountNumber());
-        System.out.println("Amount: " +transaction.getAmount());
-        System.out.println("Previous balance: " +initialBalance);
-        System.out.println("New balance: " + transaction.getBalanceAfter());
-        System.out.println("Date/time: " + transaction.getTimestamp());
+        System.out.println("Account Number: " + accNumber);
+        System.out.println("Transaction: " + transactionType);
+        System.out.println("Amount: $" + amount);
+        System.out.println("Previous Balance: $" + initialBalance);
 
-//        System.out.println("\nConfirm transaction? (Y/N): ");
         String confirm = validationUtils.getStringInput("\nConfirm transaction? (Y/N): ");
 
-        if (confirm.equalsIgnoreCase("y")){
-            boolean accept = account.processTransaction(amountForTransaction,transactionType);
-            if (accept){
-                transactionManager.addTransaction(transaction);
-                System.out.println("\n ===========Transaction completed successfully============");
-            }else {
-                System.out.println("Transaction failed. try again");
-            }
+        if (!confirm.equalsIgnoreCase("y")) {
+            System.out.println("\nTransaction canceled.");
+            validationUtils.enterToContinue();
+            return;
         }
-        else {
-            System.out.println("\nTransaction denied");
+
+        // Process transaction
+        boolean success = account.processTransaction(amount, transactionType);
+
+        if (success) {
+            // Create transaction with updated balance
+            Transaction transaction = new Transaction(accNumber, transactionType, amount, account.getBalance());
+            transactionManager.addTransaction(transaction);
+
+            System.out.println("\n=========== Transaction Completed Successfully ===========");
+            System.out.println("Transaction ID: " + transaction.getTransactionId());
+            System.out.println("New Balance: $" + transaction.getBalanceAfter());
+            System.out.println("Date/Time: " + transaction.getTimestamp());
+
+        } else {
+            System.out.println("\nTransaction failed. Please try again.");
         }
+
         validationUtils.enterToContinue();
     }
+
 
     // Logic for Menu Option 4 (US-4)
     private static void handleViewHistory() {

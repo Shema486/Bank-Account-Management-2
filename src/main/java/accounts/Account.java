@@ -1,5 +1,6 @@
 package accounts;
 import customers.Customer;
+import exceptions.InsufficientFundException;
 import interfaces.Depositable;
 import interfaces.Transactable;
 import interfaces.Withdrawable;
@@ -42,18 +43,23 @@ public abstract class Account implements Transactable, Depositable, Withdrawable
     };
     public   abstract boolean withdraw(double amount);
     @Override
-    public boolean processTransaction (double amount, String type){
-        if (type.equalsIgnoreCase("DEPOSIT")){
-            deposit(amount);
-            return true;
+    public boolean processTransaction(double amount, String type) {
+        try {
+            if (type.equalsIgnoreCase("DEPOSIT")) {
+                return deposit(amount);
+            }
+            else if (type.equalsIgnoreCase("WITHDRAW")) {
+                return withdraw(amount); // may throw exception
+            }
+            else {
+                return false;
+            }
+        } catch (InsufficientFundException e) {
+            System.out.println(e.getMessage());
+            return false;
         }
-        else if (type.equalsIgnoreCase("WITHDRAW")){
-            withdraw(amount);
-            return true;
-        }
-        return false;
-
     }
+
 
 
 }
