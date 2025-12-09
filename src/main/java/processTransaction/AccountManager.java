@@ -1,13 +1,15 @@
 package processTransaction;
 
 import accounts.Account;
+
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 // Assuming 'accounts.Account' and 'customers.RegularCustomer' exist,
 // though RegularCustomer is not used here.
 
-public class AccountManager {
+public class AccountManager implements Serializable{
 
     // Composition: Holds a List of Account objects (Good use of abstraction!)
     private List<Account> accounts;
@@ -65,4 +67,30 @@ public class AccountManager {
         // Uses the correct List method (.size())
         return accounts.size();
     }
+
+//    public void saveAccountToFile(String fileName){
+//        try {
+//            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName));
+//            oos.writeObject(accounts);
+//            oos.writeInt(accounts.size());
+//            System.out.println("Account saved successfully......!");
+//        }catch (IOException e){
+//            System.out.println("Error try again" + e.getMessage());
+//        }
+//    }
+//    public  void  printAccountFromFileToConsole(String fileName){
+//        try {
+//            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName));
+//            accounts = (List<Account>) ois.readObject();
+////            int accountCount =accounts.size();
+////            accountCount = ois.readInt();
+//
+//            System.out.println("Accounts loaded from file!");
+//        }catch (FileNotFoundException e){
+//            System.out.println("No previous accounts found, starting fresh.");
+//        }
+//        catch (IOException | ClassNotFoundException e){
+//            System.out.println("Error uuu" + e.getMessage());
+//        }
+//    }
 }

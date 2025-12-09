@@ -10,6 +10,8 @@ import processTransaction.Transaction;
 import transactionHistory.TransactionManager;
 
 
+import javax.imageio.IIOException;
+import java.io.*;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -21,7 +23,7 @@ public class Main {
     static ValidationUtils validationUtils = new ValidationUtils();
 
     public static void main(String[] args) {
-        // 1. Initialize data for testing (US-1 and US-4 requirement)
+
         initializeData();
 
 
@@ -91,17 +93,18 @@ public class Main {
 
     // Helper to create initial accounts and transactions for testing
     private static void initializeData() {
-        Customer c1 = new RegularCustomer("Alice",64,"555-555","111-RWANDA");
-        Customer c2 = new RegularCustomer("SHEMA",54,"544-335","122-BURUNDI");
-        Customer c3 = new RegularCustomer("Bruce",24,"522-522","333-CAMERON");
-        Customer c4 = new PremiumCustomer("Ange",30,"115-511","334-CANADA");
-        Customer c5 = new PremiumCustomer("Peace",54,"235-445","443-USA");
 
-        Account acc1 = new SavingsAccount(c1,5000);
-        Account acc2 = new SavingsAccount(c2,2000);
-        Account acc3 = new SavingsAccount(c3,1000);
-        Account acc4 = new CheckingAccount(c4,10000);
-        Account acc5 = new CheckingAccount(c5,8000);
+        Customer c1 = new RegularCustomer("Alice", 64, "555-555", "111-RWANDA");
+        Customer c2 = new RegularCustomer("SHEMA", 54, "544-335", "122-BURUNDI");
+        Customer c3 = new RegularCustomer("Bruce", 24, "522-522", "333-CAMERON");
+        Customer c4 = new PremiumCustomer("Ange", 30, "115-511", "334-CANADA");
+        Customer c5 = new PremiumCustomer("Peace", 54, "235-445", "443-USA");
+
+        Account acc1 = new SavingsAccount(c1, 5000);
+        Account acc2 = new SavingsAccount(c2, 2000);
+        Account acc3 = new SavingsAccount(c3, 1000);
+        Account acc4 = new CheckingAccount(c4, 10000);
+        Account acc5 = new CheckingAccount(c5, 8000);
 
         accountManager.addAccount(acc1);
         accountManager.addAccount(acc2);
@@ -111,10 +114,7 @@ public class Main {
         // Create initial Transactions (US-4 initial data)
         acc1.deposit(500.00); // Balance 2000
         transactionManager.addTransaction(new Transaction(acc1.getAccountNumber(), "DEPOSIT", 500.00, acc1.getBalance()));
-
-        System.out.println("--- Initial Test Data Loaded Successfully ---");
     }
-
     // 1. Get Source Account
     private static void handleTransfer(){
         System.out.println("\n--- PROCESS ACCOUNT TRANSFER ---");

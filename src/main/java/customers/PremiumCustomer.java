@@ -1,8 +1,10 @@
 package customers;
 
-public class PremiumCustomer extends Customer {
+import java.io.Serializable;
+
+public class PremiumCustomer extends Customer implements Serializable {
     // Private field specific to Premium customers [cite: 378]
-    private  double minimumBalance ; // Minimum to maintain premium status
+    private  final double minimumBalance ; // Minimum to maintain premium status
 
     // Constructor [cite: 378]
     public PremiumCustomer(String name, int age, String contact, String address) {

@@ -2,11 +2,12 @@ package processTransaction;
 
 
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 
-public class Transaction  {
+public class Transaction implements Serializable {
     // Static field for generating unique transaction IDs (e.g., TXN001)
     private static int transactionCounter = 0;
 

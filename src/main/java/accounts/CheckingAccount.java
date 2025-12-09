@@ -4,8 +4,10 @@ import customers.Customer;
 import customers.PremiumCustomer;
 import exceptions.OverdraftExceededException;
 
+import java.io.Serializable;
 
-public class CheckingAccount extends Account{
+
+public class CheckingAccount extends Account implements Serializable {
 
     private double overdraftLimit;
     private double monthlyFee;

@@ -1,6 +1,8 @@
 package customers;
 
-public class RegularCustomer extends Customer {
+import java.io.Serializable;
+
+public class RegularCustomer extends Customer implements Serializable {
 
     // Constructor (simply calls the abstract class constructor)
     public RegularCustomer(String name, int age, String contact, String address) {

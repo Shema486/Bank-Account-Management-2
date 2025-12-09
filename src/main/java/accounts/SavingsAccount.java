@@ -5,8 +5,10 @@ import customers.Customer;
 import customers.PremiumCustomer;
 import exceptions.InsufficientFundException;
 
+import java.io.Serializable;
+
 // US-1: SavingsAccount
-public class SavingsAccount extends Account{
+public class SavingsAccount extends Account implements Serializable {
 
     private double interestRate;
     private double minimumBalance;

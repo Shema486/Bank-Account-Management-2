@@ -5,8 +5,10 @@ import interfaces.Depositable;
 import interfaces.Transactable;
 import interfaces.Withdrawable;
 
+import java.io.Serializable;
 
-public abstract class Account implements Transactable, Depositable, Withdrawable {
+
+public abstract class Account implements Transactable, Depositable, Withdrawable, Serializable {
     // Static field for generating unique account IDs (e.g., ACC001)
     private static int accountCounter = 0;
 

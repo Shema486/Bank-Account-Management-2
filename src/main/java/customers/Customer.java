@@ -1,15 +1,17 @@
 package customers;
 
-public abstract class Customer {
+import java.io.Serializable;
+
+public abstract class Customer implements Serializable {
     // Static field for generating unique customer IDs (e.g., CUS001)
     public static int customerCounter=0;
 
     // Private fields (Encapsulation)
-    private String customerId;
-    private int age;
-    private String name;
-    private String contact;
-    private String address;
+    private final String customerId;
+    private final int age;
+    private final String name;
+    private final String contact;
+    private final String address;
 
     //constructor
     public Customer(String name, int age, String contact, String address) {

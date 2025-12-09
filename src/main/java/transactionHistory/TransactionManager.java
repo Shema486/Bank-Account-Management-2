@@ -1,11 +1,12 @@
 package transactionHistory;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 // Import the Transaction class correctly based on your package structure
 import processTransaction.Transaction;
 
-public class TransactionManager {
+public class TransactionManager implements Serializable {
     // 1. DIP: Depend on the List abstraction, not the concrete array/ArrayList.
     // This is the High-Level Module depending on Abstraction.
     private  List<Transaction> transactions;
