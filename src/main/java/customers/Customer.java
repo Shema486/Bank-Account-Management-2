@@ -3,6 +3,8 @@ package customers;
 import java.io.Serializable;
 
 public abstract class Customer implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     // Static field for generating unique customer IDs (e.g., CUS001)
     public static int customerCounter=0;
 

@@ -3,6 +3,8 @@ package customers;
 import java.io.Serializable;
 
 public class RegularCustomer extends Customer implements Serializable {
+    private static final long serialVersionUID = 1L;
+
 
     // Constructor (simply calls the abstract class constructor)
     public RegularCustomer(String name, int age, String contact, String address) {

@@ -1,12 +1,12 @@
 package transactionHistory;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 // Import the Transaction class correctly based on your package structure
 import processTransaction.Transaction;
 
-public class TransactionManager implements Serializable {
+public class TransactionManager  {
     // 1. DIP: Depend on the List abstraction, not the concrete array/ArrayList.
     // This is the High-Level Module depending on Abstraction.
     private  List<Transaction> transactions;
@@ -103,5 +103,28 @@ public class TransactionManager implements Serializable {
     // Required for JUnit testing
     public int getTransactionCount() {
         return this.transactions.size();
+    }
+    public  void saveTransaction (){
+        try{
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Transaction.dat"));
+            oos.writeObject(transactions);
+            oos.close();
+            System.out.println("Transaction save successfully");
+        } catch (Exception e) {
+            System.out.println("Error saving transaction");
+        }
+    }
+
+    public void loadTransaction (){
+        try{
+            File file =new File("Transaction.dat");
+            if (!file.exists())return;
+            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
+            transactions = (List<Transaction>)ois.readObject();
+            ois.close();
+            System.out.println("transaction loaded successfully");
+        } catch (Exception e) {
+            System.out.println("Error loading Transactions"+e.getMessage());
+        }
     }
 }

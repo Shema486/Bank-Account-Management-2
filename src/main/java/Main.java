@@ -25,14 +25,15 @@ public class Main {
     public static void main(String[] args) {
 
         initializeData();
-
+        accountManager.loadAccount();
+        transactionManager.loadTransaction();
 
         // 2. Main menu loop (US-5)
         int choice = 0;
         do {
             displayMenu();
             try {
-                System.out.print("Enter your choice (1-6): ");
+                System.out.print("Enter your choice (1-7): ");
                 choice = scanner.nextInt();
                 scanner.nextLine(); // Consume newline
 
@@ -58,11 +59,16 @@ public class Main {
                         handleTransfer();
                         break;
                     case 6:
+                        accountManager.saveAccount();
+                        transactionManager.saveTransaction();
+                        break;
+                    case 7:
                         System.out.println("\nThank you for using the Bank Account Management System. Goodbye!");
                         break;
                     default:
                         // Input Validation (US-5 Acceptance Criteria)
-                        System.out.println("Invalid choice. Please enter a number between 1 and 5.");
+                        System.out.println("Invalid choice. Please enter a number between 1 and 7.");
+                        break;
                 }
             } catch (InputMismatchException e) {
                 // Input Validation for non-integer inputs (US-5 Acceptance Criteria)
@@ -70,7 +76,7 @@ public class Main {
                 scanner.nextLine(); // Clear the invalid input
                 choice = 0;
             }
-        } while (choice != 6);
+        } while (choice != 7);
 
         scanner.close();
     }
@@ -78,16 +84,18 @@ public class Main {
     // --- Helper Methods ---
 
     private static void displayMenu() {
-            System.out.println("\n=============================================");
-            System.out.println("      BANK ACCOUNT MANAGEMENT SYSTEM MENU    ");
-            System.out.println("=============================================");
-            System.out.println("1. Create New Account ");
-            System.out.println("2. View All Accounts ");
-            System.out.println("3. Process Transaction (Deposit/Withdraw) ");
-            System.out.println("4. View Transaction History ");
-            System.out.println("5. Process Account Transfer");
-            System.out.println("6. Exit ");
-            System.out.println("=============================================");
+
+            System.out.println("\n╔════════════════════════════════════════════════════╗");
+            System.out.println("║           🏦 BANK ACCOUNT MANAGEMENT SYSTEM        ║");
+            System.out.println("╠════════════════════════════════════════════════════╣");
+            System.out.println("║ 1️⃣  Create New Account                             ║");
+            System.out.println("║ 2️⃣  View All Accounts                              ║");
+            System.out.println("║ 3️⃣  Process Transaction (Deposit/Withdraw)         ║");
+            System.out.println("║ 4️⃣  View Transaction History                       ║");
+            System.out.println("║ 5️⃣  Process Account Transfer                       ║");
+            System.out.println("║ 6️⃣  Save / Load Accounts & Transactions            ║");
+            System.out.println("║ 7️⃣  Exit                                           ║");
+            System.out.println("╚════════════════════════════════════════════════════╝");
 
     }
 
@@ -114,6 +122,7 @@ public class Main {
         // Create initial Transactions (US-4 initial data)
         acc1.deposit(500.00); // Balance 2000
         transactionManager.addTransaction(new Transaction(acc1.getAccountNumber(), "DEPOSIT", 500.00, acc1.getBalance()));
+
     }
     // 1. Get Source Account
     private static void handleTransfer(){
@@ -140,7 +149,7 @@ public class Main {
             return;
         }
         // 3. Get Amount
-        System.out.print("Enter Transfer Amount: $");
+//        System.out.print("Enter Transfer Amount: $");
         double transferAmount = validationUtils.getDoubleInput("Enter Transfer Amount: $",500); // Assumes your helper method for input validation
 
         if (transferAmount <= 0) {
@@ -323,10 +332,10 @@ public class Main {
            validationUtils.enterToContinue();
            return;
         }
-        System.out.println("\nAccount: "+accNum+"-"+ account.getCustomer().getName());
+        System.out.println("\nCustomer: "+ account.getCustomer().getName());
         System.out.println("Account type: " + account.getAccountNumber());
         System.out.println("Current balance: " + account.getBalance());
-        System.out.println("TXN ID | DATE/TIME |  TYPE  |  AMOUNT  |  BALANCE");
+
         transactionManager.viewTransactionsByAccount(accNum);
         System.out.println("\nTotal transaction: "+ transactionManager.getTransactionCount());
         System.out.println("Total Deposit: " + transactionManager.calculateTotalDeposit(accNum));

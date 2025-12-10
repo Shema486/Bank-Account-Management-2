@@ -8,6 +8,8 @@ import java.time.format.DateTimeFormatter;
 
 
 public class Transaction implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     // Static field for generating unique transaction IDs (e.g., TXN001)
     private static int transactionCounter = 0;
 

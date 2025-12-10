@@ -3,6 +3,8 @@ package customers;
 import java.io.Serializable;
 
 public class PremiumCustomer extends Customer implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     // Private field specific to Premium customers [cite: 378]
     private  final double minimumBalance ; // Minimum to maintain premium status
 

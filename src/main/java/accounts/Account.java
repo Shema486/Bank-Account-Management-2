@@ -9,6 +9,8 @@ import java.io.Serializable;
 
 
 public abstract class Account implements Transactable, Depositable, Withdrawable, Serializable {
+    private static final long serialVersionUID = 1L;
+
     // Static field for generating unique account IDs (e.g., ACC001)
     private static int accountCounter = 0;
 
@@ -32,6 +34,10 @@ public abstract class Account implements Transactable, Depositable, Withdrawable
     public double getBalance() {return balance;}
     public Customer getCustomer() {return customer;}
     public String getAccountNumber() {return accountNumber;}
+    public static void setAccountCounter(int value) {
+        accountCounter = value;
+    }
+
 
     //Abstract method
     public abstract void displayAccountDetails();
